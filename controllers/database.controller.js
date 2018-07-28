@@ -9,7 +9,7 @@ if(devEnv) {
 }
 else {
     console.log('PRODUCTION ENVIRONMENT for database');
-    dbUrl = `mongodb://hashcode:lekkysonra@ds235388.mlab.com:35388/etickett`;
+    dbUrl = `mongodb://lekeleke:lekeleke1@ds157901.mlab.com:57901/spave`;
 }
 mongoose.connect(dbUrl, {autoIndex: true})
     .catch(reason=> {
