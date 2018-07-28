@@ -16,6 +16,9 @@ const returnSuccess = (res)=> {
     return res.json({status: 'success'});
 };
 
+/**
+    controller to handle spending and saving functionality
+ */
 
 router.post('/add-spending', (req, res) => {
     let name = req.body.name;

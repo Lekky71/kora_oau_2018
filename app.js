@@ -72,7 +72,7 @@ app.use(express.static(path.join(__dirname, 'etickett')));
 
 // app.use(subdomain('*', subdomainController));
 
-app.use('/api', index);
+app.use(['/', '/api'], index);
 app.use('/api/users', users);
 
 app.use('/api/auth', signup);

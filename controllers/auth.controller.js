@@ -7,8 +7,8 @@ let User = databaseController.User;
 let Bank = databaseController.Bank;
 const LocalStrategy = require('passport-local').Strategy;
 
-const { check, validationResult } = require('express-validator/check');
-const { matchedData, sanitize } = require('express-validator/filter');
+const {check, validationResult} = require('express-validator/check');
+const {matchedData, sanitize} = require('express-validator/filter');
 
 const bcrypt = require("bcrypt");
 
@@ -16,30 +16,32 @@ let app = express();
 
 app.use(router);
 
-
 passport.use(new LocalStrategy(
     (username, password, done) => {
-        databaseController.userExists(username.toString().toLowerCase(), (exists) =>{
-            if(exists){}
-            else{
+        databaseController.userExists(username.toString().toLowerCase(), (exists) => {
+            if (exists) {
+            }
+            else {
                 return done(null, false);
             }
         })
     }
 ));
 
-
 router.post('/signup', [
 
-    check('username').exists().withMessage('Enter username').trim().isLength({min : 5}).withMessage("Minimum length for username is 5"),
+    /**
+     * validate signup form
+     */
+    check('username').exists().withMessage('Enter username').trim().isLength({min: 5}).withMessage("Minimum length for username is 5"),
     check('email').isEmail().withMessage('Enter a valid email').trim().normalizeEmail(),
-    check('password').exists().withMessage('Enter a strong password').isLength({min : 5}).withMessage("Minimum length for password is 5"),
-    check('first_name').exists().withMessage('Enter first name').trim().isLength({min : 3}).withMessage("Minimum length for first name is 3"),
-    check('last_name').exists().withMessage('Enter last name').trim().isLength({min : 3}).withMessage("Minimum length for last name is 3"),
-    check('account_number').exists().withMessage('Enter account number').trim().isLength({min : 10}).withMessage("Bank account must be 10 digits"),
+    check('password').exists().withMessage('Enter a strong password').isLength({min: 5}).withMessage("Minimum length for password is 5"),
+    check('first_name').exists().withMessage('Enter first name').trim().isLength({min: 3}).withMessage("Minimum length for first name is 3"),
+    check('last_name').exists().withMessage('Enter last name').trim().isLength({min: 3}).withMessage("Minimum length for last name is 3"),
+    check('account_number').exists().withMessage('Enter account number').trim().isLength({min: 10}).withMessage("Bank account must be 10 digits"),
     check('bank_name').exists().withMessage('Enter bank name')
 
-], (req, res)=> {
+], (req, res) => {
     const errors = validationResult(req);
     let errorArray = [];
     let body = req.body;
@@ -47,8 +49,8 @@ router.post('/signup', [
     let allBanks;
     allBanks = Object.keys(PaystackTransfer.all_banks).map(key => PaystackTransfer.all_banks[key]);
 
-    errors.array().forEach((err1)=> {
-       errorArray.push(err1.msg)
+    errors.array().forEach((err1) => {
+        errorArray.push(err1.msg)
     });
     if (!errors.isEmpty()) {
         return res.json({signUpErrors: errorArray, logInErrors: null, signUpBody: body, logInBody: null});
@@ -62,30 +64,50 @@ router.post('/signup', [
     let lastName = body.last_name;
 
     let accountNumber = body.account_number;
-    let bankType = body.bank_name.toString().replace(new RegExp('-', 'g'),'_');
+    let bankType = body.bank_name.toString().replace(new RegExp('-', 'g'), '_');
 
     let userBank = PaystackTransfer.all_banks[bankType.toString()];
 
 
-    databaseController.userExists(username, (user)=>{
-        if(user !== null){
-            return res.json({signUpErrors: ["Sorry, this username is already taken. Try another one"], logInErrors: ["You can now log in with your details"], signUpBody: body, logInBody: null});
+    databaseController.userExists(username, (user) => {
+        if (user !== null) {
+            return res.json({
+                signUpErrors: ["Sorry, this username is already taken. Try another one"],
+                logInErrors: ["You can now log in with your details"],
+                signUpBody: body,
+                logInBody: null
+            });
         }
-        databaseController.User.findOne({email: email}, (err32, userByEmail)=> {
-            if(err32) throw err32;
-            if(userByEmail){
-                return res.json({signUpErrors: ["Sorry, this email is already in use by another user."], logInErrors: ["You can now log in with your details"], signUpBody: body, logInBody: null});
+        databaseController.User.findOne({email: email}, (err32, userByEmail) => {
+            if (err32) throw err32;
+            if (userByEmail) {
+                return res.json({
+                    signUpErrors: ["Sorry, this email is already in use by another user."],
+                    logInErrors: ["You can now log in with your details"],
+                    signUpBody: body,
+                    logInBody: null
+                });
             }
             else {
-                if(user === null){
-                    PaystackTransfer.createRecipient((firstName + " "+lastName), username, accountNumber, userBank, {email: email})
-                        .then(function(respbody){
-                            console.log("Paystack recipient creation : "+ JSON.stringify(respbody));
-                            if(respbody.message === 'Recipient already exists'){
-                                return res.json({signUpErrors: ['This account number is already being used by another user'], logInErrors: null, signUpBody: body, logInBody: null});
+                if (user === null) {
+                    PaystackTransfer.createRecipient((firstName + " " + lastName), username, accountNumber, userBank, {email: email})
+                        .then(function (respbody) {
+                            console.log("Paystack recipient creation : " + JSON.stringify(respbody));
+                            if (respbody.message === 'Recipient already exists') {
+                                return res.json({
+                                    signUpErrors: ['This account number is already being used by another user'],
+                                    logInErrors: null,
+                                    signUpBody: body,
+                                    logInBody: null
+                                });
                             }
-                            else if(respbody.message === 'Account number is invalid'){
-                                return res.json({signUpErrors: ['Your account detail is invalid'], logInErrors: null, signUpBody: body, logInBody: null});
+                            else if (respbody.message === 'Account number is invalid') {
+                                return res.json({
+                                    signUpErrors: ['Your account detail is invalid'],
+                                    logInErrors: null,
+                                    signUpBody: body,
+                                    logInBody: null
+                                });
                             }
                             else {
                                 let bankDetails = {
@@ -96,49 +118,54 @@ router.post('/signup', [
                                     recipient_code: respbody.data.recipient_code
                                 };
 
-                                Bank.create(bankDetails, (err, bank)=> {
-                                   if(err) throw err;
-                                   if(bank){
-                                       let newUser = {
-                                           username: username,
-                                           password: password,
-                                           first_name : firstName,
-                                           last_name: lastName,
-                                           email: email,
-                                           bank: bank._id
-                                       };
+                                Bank.create(bankDetails, (err, bank) => {
+                                    if (err) throw err;
+                                    if (bank) {
+                                        let newUser = {
+                                            username: username,
+                                            password: password,
+                                            first_name: firstName,
+                                            last_name: lastName,
+                                            email: email,
+                                            bank: bank._id
+                                        };
 
-                                       databaseController.saveNewUser(newUser, (user)=>{
-                                           return res.json({signUpErrors: null, logInErrors: ["You can now log in with your details"], signUpBody: null, logInBody: null});
-                                       });
-                                   }
+                                        databaseController.saveNewUser(newUser, (user) => {
+                                            return res.json({
+                                                signUpErrors: null,
+                                                logInErrors: ["You can now log in with your details"],
+                                                signUpBody: null,
+                                                logInBody: null
+                                            });
+                                        });
+                                    }
                                 });
-
-
 
                             }
 
-                        }).catch(function(error){
+                        }).catch(function (error) {
                         console.log(error);
-                        return res.json({signUpErrors: ["An error occured while creating your account"], logInErrors: null, signUpBody: body, logInBody: null});
+                        return res.json({
+                            signUpErrors: ["An error occured while creating your account"],
+                            logInErrors: null,
+                            signUpBody: body,
+                            logInBody: null
+                        });
                     });
-
 
                 }
             }
-
         });
-
     })
 });
 
 router.post('/login', [
     check('username').exists().withMessage('Enter username').trim(),
     check('password').exists().withMessage('Enter a password')
-], (req, res)=> {
+], (req, res) => {
     const errors = validationResult(req);
     let errorArray = [];
-    errors.array().forEach((err1)=> {
+    errors.array().forEach((err1) => {
         errorArray.push(err1.msg)
     });
     let body = req.body;
@@ -153,8 +180,13 @@ router.post('/login', [
         if (err) {
             throw err;
         }
-        if(!user) {
-            return res.json({signUpErrors: null, logInErrors: ["User does not exist"], signUpBody: null, logInBody: body});
+        if (!user) {
+            return res.json({
+                signUpErrors: null,
+                logInErrors: ["User does not exist"],
+                signUpBody: null,
+                logInBody: body
+            });
         }
 
         bcrypt.compare(password, user.password, (errrr, result) => {
@@ -165,17 +197,22 @@ router.post('/login', [
                 return res.json({signUpErrors: null, logInErrors: ["correct"], signUpBody: null, logInBody: body});
             }
             else {
-                return res.json({signUpErrors: null, logInErrors: ["Oops! Wrong password."], signUpBody: null, logInBody: body});
+                return res.json({
+                    signUpErrors: null,
+                    logInErrors: ["Oops! Wrong password."],
+                    signUpBody: null,
+                    logInBody: body
+                });
             }
         });
 
     });
 });
 
-router.get('/logout', (req, res, next)=> {
-    if(req.session){
-        req.session.destroy((err)=>{
-            if(err){
+router.get('/logout', (req, res, next) => {
+    if (req.session) {
+        req.session.destroy((err) => {
+            if (err) {
                 return next(err);
             }
             else res.redirect('/');

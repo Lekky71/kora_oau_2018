@@ -10,6 +10,7 @@ if(devEnv) {
 else {
     console.log('PRODUCTION ENVIRONMENT for database');
     dbUrl = `mongodb://lekeleke:lekeleke1@ds157901.mlab.com:57901/spave`;
+    // Should save this env variable
 }
 mongoose.connect(dbUrl, {autoIndex: true})
     .catch(reason=> {

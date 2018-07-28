@@ -33,3 +33,13 @@ This system helps you cultivate a good saving habit, because most of time, we en
 
 Our platform helps you create a balance between your expenditures and savings.<br/>
 ### <i>Spave!! Spend and Save wisely.</i>
+
+### Extra Info
+Paystack NodeJs library created by @Lekky71<br/>
+REST API Server + Angular fronend <br/>
+Android app could be created using a WebView to display the website<br/>
+
+##### Stack :
+Backend : NodeJS + Express + MongoDB
+Frontend : AngularJs, HTML, CSS, Bootstrap.
+Submitted code is a Minimum Viable Product(MVP) for the whole idea
