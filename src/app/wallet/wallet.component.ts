@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {Savings} from '../models/savings';
 
 @Component({
   selector: 'app-wallet',
@@ -6,10 +7,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./wallet.component.css']
 })
 export class WalletComponent implements OnInit {
-
+  savings: Savings[] = [];
   constructor() { }
 
   ngOnInit() {
+  }
+
+  addSavings(data: Savings) {
+    this.savings.push(data);
   }
 
 }
