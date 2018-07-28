@@ -1,9 +1,9 @@
 export interface AllSpendings {
-  _id: string;
+  _id?: string;
   name: string;
-  amount: number;
-  cycle: number;
-  bank_name; string;
-  account_number: string;
-  user_id: string;
+  amount: string;
+  interval: string;
+  bank_name?; string;
+  account: number;
+  user_id?: string;
 }

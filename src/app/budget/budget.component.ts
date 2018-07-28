@@ -9,26 +9,28 @@ import {AuthService} from '../services/auth.service';
   styleUrls: ['./budget.component.css']
 })
 export class BudgetComponent implements OnInit {
-  spendins: AllSpendings[];
+  public spendings: AllSpendings[];
   constructor(private budgetService: BudgetService, private auth: AuthService) { }
 
   ngOnInit() {
-    const user_id = this.auth.getUserId();
-    this.budgetService.getSpending(user_id)
-      .subscribe(res => {
-        this.spendins = res;
-      });
+    // const user_id = this.auth.getUserId();
+    // this.budgetService.getSpending(user_id)
+    //   .subscribe(res => {
+    //     this.spendins = res;
+    //   });
   }
 
-  addTransaction(data) {
-    this.budgetService.addSpending(data)
-      .subscribe( res => {
-        if (res) {
-          console.log('successfull');
-        } else {
-          console.log('fail');
-        }
-      });
+  addTransaction(data: AllSpendings) {
+    console.log(data);
+    this.spendings.push(data);
+    // this.budgetService.addSpending(data)
+    //   .subscribe( res => {
+    //     if (res) {
+    //       console.log('successfull');
+    //     } else {
+    //       console.log('fail');
+    //     }
+    //   });
   }
 
 }
