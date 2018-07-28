@@ -176,7 +176,10 @@ router.post('/login', [
         return res.json({signUpErrors: null, logInErrors: errorArray, signUpBody: null, logInBody: body});
     }
 
-    User.findOne({username: username.toString().trim()}, (err, user) => {
+    User.findOne({username: username.toString().trim()})
+        .populate('spendings')
+        .populate('savings')
+        .exec((err, user) => {
         if (err) {
             throw err;
         }
@@ -194,7 +197,8 @@ router.post('/login', [
                 req.session.username = user.username;
                 req.session.userId = user._id;
                 console.log("Saved id is " + req.session.id);
-                return res.json({signUpErrors: null, logInErrors: ["correct"], signUpBody: null, logInBody: body});
+                return res.json(user);
+                // return res.json({signUpErrors: null, logInErrors: ["correct"], signUpBody: null, logInBody: body});
             }
             else {
                 return res.json({
