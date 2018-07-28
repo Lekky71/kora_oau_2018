@@ -9,7 +9,7 @@ import {AuthService} from '../services/auth.service';
   styleUrls: ['./budget.component.css']
 })
 export class BudgetComponent implements OnInit {
-  public spendings: AllSpendings[];
+  spendings: AllSpendings[] = [];
   constructor(private budgetService: BudgetService, private auth: AuthService) { }
 
   ngOnInit() {
