@@ -7,7 +7,10 @@ let SpendingSchema = new Schema({
     cycle: Number,
     status: String,
     bank_name: String,
-    account_number: String
+    account_number: String,
+    user_id: String
 });
 
 let Spending = mongoose.model('Spending', SpendingSchema);
+
+module.exports = Spending;

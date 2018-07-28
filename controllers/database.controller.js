@@ -33,7 +33,7 @@ let BankSchema = new Schema({
     bank_name: String
 });
 
-let UserLoginSchema = new Schema({
+let UserSchema = new Schema({
     username: {
         type: String,
         unique: true,
@@ -54,17 +54,17 @@ let UserLoginSchema = new Schema({
     last_name: String,
     bank: { type: Schema.Types.ObjectId, ref: 'Bank',},
     city: String,
-    spendings: {type: Schema.Types.ObjectId, ref: 'Spending'},
-    savings: {type: Schema.Types.ObjectId, ref: 'Saving'}
+    spendings: [{type: Schema.Types.ObjectId, ref: 'Spending'}],
+    savings: [{type: Schema.Types.ObjectId, ref: 'Saving'}]
 });
 
 
-UserLoginSchema.methods.validatePassword = (password)=> {
+UserSchema.methods.validatePassword = (password)=> {
     return bcrypt.compare(password, this.password);
 };
 
 
-let UserLogin = mongoose.model('User', UserLoginSchema);
+let UserLogin = mongoose.model('User', UserSchema);
 let Bank = mongoose.model('Bank', BankSchema);
 
 let userExists = (username, callback) => {
@@ -87,8 +87,6 @@ let saveUser = (user, callback) => {
                 last_name: user.last_name,
                 about: '',
                 bank: user.bank,
-                events_created: [], //the string here is the event Id.
-                events_attended: []
             });
             newUser.save((err1) => {
                 if (err1) {
@@ -109,24 +107,9 @@ let findEmail = (email, callback) => {
     });
 };
 
-// let loginUser = (username, password, callback) => {
-//     let passwordhash ;
-//     UserLogin.findOne( {} )
-//
-// };
-
-let UssdUserSchema = new Schema({
-    phone_number: {
-        type: String,
-        unique: true,
-        required: true,
-        trim: true
-    }
-});
-
 
 module.exports.userExists = userExists;
 module.exports.saveNewUser = saveUser;
 module.exports.findEmail = findEmail;
 module.exports.User = UserLogin;
-module.exports.Bank = Bank
+module.exports.Bank = Bank;

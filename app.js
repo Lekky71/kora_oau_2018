@@ -20,6 +20,8 @@ let subdomain = require('express-subdomain');
 // let subdomainController = require('./controllers/subdomain.controller');
 let preRenderer = require('prerender-node').set('prerenderToken', '4HoweJhX4zZO3jnY4fzV');
 
+let transactionsController = require('./controllers/transaction.controller');
+
 let app = express();
 app.use(cookieParser());
 
@@ -74,6 +76,7 @@ app.use('/api', index);
 app.use('/api/users', users);
 
 app.use('/api/auth', signup);
+app.use('/api/transactions', transactionsController);
 app.use(preRenderer);
 
 
