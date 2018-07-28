@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {BudgetService} from '../services/budget.service';
 
 @Component({
   selector: 'app-budget',
@@ -7,13 +8,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BudgetComponent implements OnInit {
 
-  constructor() { }
+  constructor(private budgetService: BudgetService) { }
 
   ngOnInit() {
   }
 
   addTransaction(data) {
-
+    this.budgetService.addSpending(data)
+      .subscribe( res => {
+        if (res) {
+          console.log('successfull');
+        } else {
+          console.log('fail');
+        }
+      });
   }
 
 }

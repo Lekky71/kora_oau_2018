@@ -3,6 +3,7 @@ import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {SignupResponse} from '../models/signup_res';
+import {LoginResponse} from '../models/login_res';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,8 @@ export class AuthService {
     login: '/api/auth/login'
   };
   loggedIn: boolean;
+
+  user_data: LoginResponse;
 
   constructor(private http: HttpClient, private router: Router) {
   }
@@ -33,14 +36,19 @@ export class AuthService {
   }
 
   login(credentials) {
-    return this.http.post<SignupResponse>(this.urls.login, credentials).pipe(
+    return this.http.post<LoginResponse>(this.urls.login, credentials).pipe(
       map(response => {
-        if (response.logInErrors[0] === 'correct') {
+        if (response._id) {
           console.log(response);
+          this.user_data = response;
           this.loggedIn = true;
           return true;
         }
         return false;
       }));
+  }
+
+  getUser() {
+    return this.user_data;
   }
 }

@@ -9,17 +9,26 @@ import {TransactionResponse} from '../models/transaction_res';
 })
 export class BudgetService {
   urls = {
-    add: '/api/transactions/add-spending'
+    add: '/api/transactions/add-spending',
+    all: '/api/transactions/get-spendings'
   };
   constructor(private http: HttpClient) { }
 
   addSpending(data) {
     return this.http.post<TransactionResponse>(this.urls.add, data).pipe(
       map(res => {
-        if (res.status == 'success') {
+        if (res.status === 'success') {
           return true;
         }
         return false;
       }));
+  }
+
+  getSpending(userId) {
+    return this.http.post(this.urls.all, userId).pipe(
+      map(res => {
+
+      })
+    )
   }
 }
