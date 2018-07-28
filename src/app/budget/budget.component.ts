@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {BudgetService} from '../services/budget.service';
+import {AllSpendings} from '../models/allSpendings';
+import {AuthService} from '../services/auth.service';
 
 @Component({
   selector: 'app-budget',
@@ -7,10 +9,15 @@ import {BudgetService} from '../services/budget.service';
   styleUrls: ['./budget.component.css']
 })
 export class BudgetComponent implements OnInit {
-
-  constructor(private budgetService: BudgetService) { }
+  spendins: AllSpendings[];
+  constructor(private budgetService: BudgetService, private auth: AuthService) { }
 
   ngOnInit() {
+    const user_id = this.auth.getUserId();
+    this.budgetService.getSpending(user_id)
+      .subscribe(res => {
+        this.spendins = res;
+      });
   }
 
   addTransaction(data) {

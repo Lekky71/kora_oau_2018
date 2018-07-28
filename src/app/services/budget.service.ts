@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {SignupResponse} from '../models/signup_res';
 import {TransactionResponse} from '../models/transaction_res';
+import {AllSpendings} from '../models/allSpendings';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class BudgetService {
   }
 
   getSpending(userId) {
-    return this.http.post(this.urls.all, userId).pipe(
+    return this.http.post<AllSpendings[]>(this.urls.all, userId).pipe(
       map(res => {
         return res;
       })
