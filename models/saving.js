@@ -9,3 +9,6 @@ let SavingSchema = new Schema({
     amount_saved: Number,
     user_id: String
 });
+
+let Saving = mongoose.model('Saving', SavingSchema);
+module.exports = Saving;

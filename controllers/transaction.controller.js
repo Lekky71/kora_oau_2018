@@ -86,7 +86,7 @@ router.post('/add-saving', (req, res) => {
                 amount_saved: 0,
                 user_id: user_id
             };
-            saving.create(spnd, (err1, savedSvn) => {
+            Saving.create(spnd, (err1, savedSvn) => {
                 if(err1) return returnError(res);
                 if(savedSvn) {
                     if(!user.savings) user.savings = [];
@@ -108,7 +108,7 @@ router.post('/get-savings', (req, res) => {
         .exec((err, user) => {
         if(err) return returnError(res);
         if(user){
-            return res.json({'status': 'success', 'body': user.spendings});
+            return res.json({'status': 'success', 'body': user.savings});
         }
         else {
             return returnError(res);
