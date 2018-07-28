@@ -27,8 +27,8 @@ export class BudgetService {
   getSpending(userId) {
     return this.http.post(this.urls.all, userId).pipe(
       map(res => {
-
+        return res;
       })
-    )
+    );
   }
 }
